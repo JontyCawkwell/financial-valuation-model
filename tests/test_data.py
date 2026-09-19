@@ -15,6 +15,7 @@ def test_load_historical_data():
     assert isinstance(data, pd.DataFrame)
     assert not data.empty
 
+
 def test_validate_historical_data():
     data = load_historical_data()
 
