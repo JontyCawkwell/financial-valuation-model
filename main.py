@@ -7,6 +7,8 @@ from src.metrics import (
     calculate_nwc,
     calculate_nwc_to_revenue,
     calculate_free_cash_flow,
+    calculate_da_to_revenue,
+    calculate_capex_to_revenue,
 )
 
 data = load_historical_data()
@@ -39,3 +41,19 @@ print(data[["year", "effective_tax_rate"]])
 print(data[["year", "nwc"]])
 print(data[["year", "nwc", "nwc_to_revenue"]])
 print(data[["year", "operating_cash_flow", "capex", "free_cash_flow"]])
+
+
+data["da_to_revenue"] = calculate_da_to_revenue(data)
+data["capex_to_revenue"] = calculate_capex_to_revenue(data)
+
+print(
+    data[
+        [
+            "year",
+            "depreciation_amortisation",
+            "da_to_revenue",
+            "capex",
+            "capex_to_revenue",
+        ]
+    ]
+)

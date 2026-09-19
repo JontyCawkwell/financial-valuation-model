@@ -43,3 +43,13 @@ def calculate_nwc_to_revenue(data: pd.DataFrame) -> pd.Series:
 def calculate_free_cash_flow(data: pd.DataFrame) -> pd.Series:
     """Calculate free cash flow from operating cash flow and capital expenditure."""
     return data["operating_cash_flow"] - data["capex"]
+
+
+def calculate_da_to_revenue(data: pd.DataFrame) -> pd.Series:
+    """Calculate depreciation and amortisation as a proportion of revenue."""
+    return data["depreciation_amortisation"] / data["revenue"]
+
+
+def calculate_capex_to_revenue(data: pd.DataFrame) -> pd.Series:
+    """Calculate capital expenditure as a proportion of revenue."""
+    return data["capex"] / data["revenue"]
