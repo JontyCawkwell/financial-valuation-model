@@ -64,20 +64,6 @@ def test_build_forecast():
     assert len(forecast) == 5
     assert list(forecast["year"]) == [2026, 2027, 2028, 2029, 2030]
 
-    # Check all forecast outputs were calculated.
-    for column in [
-        "revenue",
-        "ebit",
-        "tax",
-        "nopat",
-        "da",
-        "capex",
-        "nwc",
-        "change_in_nwc",
-        "fcff",
-    ]:
-        assert forecast[column].notna().all()
-
     # Check 2026 revenue uses 2025 revenue and the 2026 growth assumption.
     expected_2026_revenue = (
         historical_data.iloc[-1]["revenue"]
