@@ -17,13 +17,16 @@ from src.dcf import (
 def build_valuation(
     historical_data: pd.DataFrame,
     forecast: pd.DataFrame,
+    market_data: dict,
     assumptions: dict,
 ) -> dict:
     """Build a complete DCF valuation from historical and forecast data."""
 
     wacc = build_wacc(
         historical_data=historical_data,
-        assumptions=assumptions,
+        market_data=market_data,
+        assumptions=assumptions
+        ,
     )
 
     dcf_result = build_dcf(
@@ -34,10 +37,7 @@ def build_valuation(
 
     latest = historical_data.iloc[-1]
 
-    debt = (
-        latest["short_term_debt"]
-        + latest["long_term_debt"]
-    )
+    debt = latest["total_debt"]
 
     cash = latest["cash"]
     diluted_shares = latest["diluted_shares"]

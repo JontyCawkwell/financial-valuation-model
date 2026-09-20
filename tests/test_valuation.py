@@ -14,8 +14,7 @@ def test_build_valuation():
     historical_data = pd.DataFrame(
         {
             "diluted_shares": [1000],
-            "short_term_debt": [200],
-            "long_term_debt": [800],
+            "total_debt": [1000],
             "cash": [100],
         }
     )
@@ -40,10 +39,15 @@ def test_build_valuation():
         },
     }
 
+    market_data = {
+    "share_price": 100,
+    }
+
     result = build_valuation(
-        historical_data=historical_data,
-        forecast=forecast,
-        assumptions=assumptions,
+        historical_data,
+        forecast,
+        market_data,
+        assumptions,
     )
 
     assert result["wacc"] == pytest.approx(0.09940594)
@@ -52,10 +56,7 @@ def test_build_valuation():
 
     assert result["equity_value"] == pytest.approx(
         result["enterprise_value"]
-        - (
-            historical_data["short_term_debt"].iloc[-1]
-            + historical_data["long_term_debt"].iloc[-1]
-        )
+        - historical_data["total_debt"].iloc[-1]
         + historical_data["cash"].iloc[-1]
     )
 

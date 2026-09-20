@@ -58,22 +58,20 @@ def calculate_wacc(
 
 def build_wacc(
     historical_data,
+    market_data,
     assumptions: dict,
 ) -> float:
-    """Calculate WACC using historical data and model assumptions."""
+    """Calculate WACC using historical and market data."""
 
     latest = historical_data.iloc[-1]
     wacc_assumptions = assumptions["wacc"]
 
     market_value_equity = calculate_market_value_equity(
-        share_price=wacc_assumptions["share_price"],
+        share_price=market_data["share_price"],
         diluted_shares=latest["diluted_shares"],
     )
 
-    debt = calculate_total_debt(
-        short_term_debt=latest["short_term_debt"],
-        long_term_debt=latest["long_term_debt"],
-    )
+    debt = latest["total_debt"]
 
     cost_of_equity = calculate_cost_of_equity(
         risk_free_rate=wacc_assumptions["risk_free_rate"],

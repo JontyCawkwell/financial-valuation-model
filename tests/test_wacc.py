@@ -69,8 +69,7 @@ def test_build_wacc():
     historical_data = pd.DataFrame(
         {
             "diluted_shares": [1000],
-            "short_term_debt": [200],
-            "long_term_debt": [800],
+            "total_debt": [1000],
         }
     )
 
@@ -85,9 +84,14 @@ def test_build_wacc():
         }
     }
 
+    market_data = {
+    "share_price": 100,
+    }
+
     result = build_wacc(
-        historical_data,
-        assumptions,
-    )
+    historical_data,
+    market_data,
+    assumptions,
+)
 
     assert result == pytest.approx(0.09940594)
