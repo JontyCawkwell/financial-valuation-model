@@ -78,29 +78,44 @@ def build_company_comps_data(
     }
 
 
+def build_comps_table_with_failures(
+    tickers: list[str],
+) -> tuple[pd.DataFrame, list[str]]:
+    """Build comparable-company metrics, recording companies that fail."""
+
+    companies = []
+    failed_tickers = []
+
+    for ticker in tickers:
+        try:
+            data = get_company_data(ticker)
+
+            historical_data = normalise_historical_data(data)
+            market_data = get_market_data(data)
+
+            company_data = build_company_comps_data(
+                historical_data,
+                market_data,
+            )
+
+            company_data["ticker"] = ticker.upper()
+
+            companies.append(company_data)
+
+        except Exception:
+            failed_tickers.append(ticker.upper())
+
+    return pd.DataFrame(companies), failed_tickers
+
+
 def build_comps_table(
     tickers: list[str],
 ) -> pd.DataFrame:
     """Build comparable-company metrics for a list of tickers."""
 
-    companies = []
+    comps, _ = build_comps_table_with_failures(tickers)
 
-    for ticker in tickers:
-        data = get_company_data(ticker)
-
-        historical_data = normalise_historical_data(data)
-        market_data = get_market_data(data)
-
-        company_data = build_company_comps_data(
-            historical_data,
-            market_data,
-        )
-
-        company_data["ticker"] = ticker.upper()
-
-        companies.append(company_data)
-
-    return pd.DataFrame(companies)
+    return comps
 
 
 def calculate_median_multiples(
@@ -178,16 +193,43 @@ def calculate_comps_valuation(
 def build_comps_valuation(
     target_historical_data: pd.DataFrame,
     comparable_tickers: list[str],
-) -> dict:
+) -> dict | None:
     """Build a comparable-company valuation for the target company."""
 
     target_data = get_target_comps_data(
         target_historical_data
     )
 
-    comps = build_comps_table(
+    comps, failed_tickers = build_comps_table_with_failures(
         comparable_tickers
     )
+
+    if failed_tickers:
+        failed_companies = ", ".join(failed_tickers)
+
+        print(
+            "\nWarning: Required financial data could not be retrieved for "
+            f"{failed_companies}."
+        )
+        print(
+            "These companies have been excluded from the comparable company "
+            "valuation. The valuation will continue using the remaining "
+            "companies."
+        )
+
+    if comps.empty:
+        print(
+            "\nWarning: Required financial data could not be retrieved for "
+            f"{', '.join(failed_tickers)}."
+        )
+        print(
+            "No comparable companies could be used for the valuation."
+        )
+        print(
+            "The comparable company valuation has been skipped. "
+            "The DCF valuation will continue."
+        )
+        return None
 
     median_multiples = calculate_median_multiples(
         comps
@@ -204,7 +246,7 @@ def build_comps_valuation(
 
     return {
         "comps": comps,
+        "failed_tickers": failed_tickers,
         "median_multiples": median_multiples,
         "valuation": valuation,
     }
-    
