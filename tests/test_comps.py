@@ -214,8 +214,8 @@ def test_build_comps_valuation(monkeypatch):
     )
 
     monkeypatch.setattr(
-        "src.comps.build_comps_table",
-        lambda tickers: comps,
+        "src.comps.build_comps_table_with_failures",
+        lambda tickers: (comps, []),
     )
 
     result = build_comps_valuation(
