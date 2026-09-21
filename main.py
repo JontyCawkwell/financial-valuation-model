@@ -12,12 +12,12 @@ from src.data_sources import (
 )
 from src.assumptions import (
     load_assumptions,
-    build_historical_assumptions,
     build_forecast_assumptions
 )
 from src.forecasts import build_forecast
 from src.valuation import build_valuation
 from src.comps import build_comps_valuation
+from src.visualisation import plot_valuation_comparison
 
 
 def parse_arguments():
@@ -130,6 +130,13 @@ def main(target_ticker, comparable_tickers):
         print(
             f"P/E price:            "
             f"${comps_valuation['valuation']['implied_share_price_pe']:.2f}"
+        )
+
+        plot_valuation_comparison(
+            current_price=market_data["share_price"],
+            dcf_price=valuation["implied_share_price"],
+            ev_ebitda_price=comps_valuation["valuation"]["implied_share_price_ev"],
+            pe_price=comps_valuation["valuation"]["implied_share_price_pe"],
         )
 
 if __name__ == "__main__":
