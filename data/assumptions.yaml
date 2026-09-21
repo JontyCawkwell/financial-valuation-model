@@ -20,7 +20,6 @@ terminal:
   exit_multiple: 18.0
 
 wacc:
-  share_price: 100.00
   risk_free_rate: 0.04
   beta: 1.0
   market_risk_premium: 0.05

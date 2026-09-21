@@ -4,8 +4,8 @@ import sys
 import pytest
 import pandas as pd
 
-
 sys.path.append(str(Path(__file__).resolve().parent.parent))
+
 from src.dcf import (
     calculate_fcff,
     calculate_terminal_value_exit_multiple,

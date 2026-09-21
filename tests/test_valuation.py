@@ -4,7 +4,6 @@ import sys
 import pandas as pd
 import pytest
 
-
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
 from src.valuation import build_valuation

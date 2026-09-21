@@ -4,8 +4,8 @@ import sys
 import pytest
 import pandas as pd
 
-
 sys.path.append(str(Path(__file__).resolve().parent.parent))
+
 from src.wacc import (
     calculate_after_tax_cost_of_debt,
     calculate_cost_of_equity,
