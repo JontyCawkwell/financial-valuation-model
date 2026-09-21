@@ -70,28 +70,29 @@ def test_build_wacc():
         {
             "diluted_shares": [1000],
             "total_debt": [1000],
+            "operating_income": [100],
+            "pretax_income": [90],
+            "income_tax_expense": [18],
         }
     )
 
     assumptions = {
         "wacc": {
-            "share_price": 100,
-            "risk_free_rate": 0.04,
-            "beta": 1.2,
             "market_risk_premium": 0.05,
             "cost_of_debt": 0.05,
-            "tax_rate": 0.20,
         }
     }
 
     market_data = {
-    "share_price": 100,
+        "share_price": 100,
+        "risk_free_rate": 0.04,
+        "beta": 1.2,
     }
 
     result = build_wacc(
-    historical_data,
-    market_data,
-    assumptions,
-)
+        historical_data,
+        market_data,
+        assumptions,
+    )
 
     assert result == pytest.approx(0.09940594)

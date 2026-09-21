@@ -11,11 +11,14 @@ from src.valuation import build_valuation
 
 def test_build_valuation():
     historical_data = pd.DataFrame(
-        {
-            "diluted_shares": [1000],
-            "total_debt": [1000],
-            "cash": [100],
-        }
+    {
+        "diluted_shares": [1000],
+        "total_debt": [1000],
+        "cash": [100],
+        "operating_income": [100],
+        "pretax_income": [90],
+        "income_tax_expense": [18],
+    }
     )
 
     forecast = pd.DataFrame(
@@ -26,12 +29,8 @@ def test_build_valuation():
 
     assumptions = {
         "wacc": {
-            "share_price": 100,
-            "risk_free_rate": 0.04,
-            "beta": 1.2,
             "market_risk_premium": 0.05,
             "cost_of_debt": 0.05,
-            "tax_rate": 0.20,
         },
         "terminal": {
             "growth_rate": 0.03,
@@ -40,6 +39,8 @@ def test_build_valuation():
 
     market_data = {
     "share_price": 100,
+    "risk_free_rate": 0.04,
+    "beta": 1.2,
     }
 
     result = build_valuation(

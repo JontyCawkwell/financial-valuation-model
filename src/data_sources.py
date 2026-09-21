@@ -140,6 +140,13 @@ def extract_share_price(info):
     return info["currentPrice"]
 
 
+def extract_pretax_income(income_statement):
+    return get_field(
+        income_statement,
+        ["Pretax Income"],
+    )
+
+
 def normalise_historical_data(data):
     """Convert yfinance data into the model's standard format."""
 
@@ -160,9 +167,8 @@ def normalise_historical_data(data):
         "inventories": extract_inventory(balance_sheet),
         "accounts_payable": extract_accounts_payable(balance_sheet),
         "capex": extract_capex(cash_flow),
-        "depreciation_amortisation": extract_depreciation_amortisation(
-            cash_flow
-        ),
+        "depreciation_amortisation": extract_depreciation_amortisation(cash_flow),
+        "pretax_income": extract_pretax_income(income_statement),
     }
 
     historical_data = pd.DataFrame(historical_data)
@@ -176,22 +182,31 @@ def normalise_historical_data(data):
     return historical_data.reset_index()
 
 
-def get_market_data(data):
-    """Extract current market data separately from historical financial data."""
+def get_risk_free_rate():
+    treasury = yf.Ticker("^TYX")
+    history = treasury.history(period="5d")
 
+    if history.empty:
+        raise ValueError("Could not retrieve 30-year Treasury yield.")
+
+    latest_yield = history["Close"].dropna().iloc[-1]
+
+    return latest_yield / 100
+
+
+def get_market_data(data):
     info = data["info"]
 
     return {
         "ticker": data["ticker"],
         "share_price": extract_share_price(info),
+        "beta": info.get("beta"),
+        "risk_free_rate": get_risk_free_rate(),
     }
 
 
 if __name__ == "__main__":
-    data = get_company_data("AAPL")
-
-    historical_data = normalise_historical_data(data)
+    data = get_company_data("KO")
     market_data = get_market_data(data)
 
-    print(historical_data)
     print(market_data)

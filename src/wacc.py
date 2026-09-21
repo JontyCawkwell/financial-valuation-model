@@ -1,3 +1,10 @@
+from pathlib import Path
+import sys
+
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+
+from src.assumptions import calculate_historical_tax_rate
+
 def calculate_cost_of_equity(
     risk_free_rate: float,
     beta: float,
@@ -74,15 +81,17 @@ def build_wacc(
     debt = latest["total_debt"]
 
     cost_of_equity = calculate_cost_of_equity(
-        risk_free_rate=wacc_assumptions["risk_free_rate"],
-        beta=wacc_assumptions["beta"],
+        risk_free_rate=market_data["risk_free_rate"],
+        beta=market_data["beta"],
         market_risk_premium=wacc_assumptions["market_risk_premium"],
     )
+
+    tax_rate = calculate_historical_tax_rate(historical_data)
 
     return calculate_wacc(
         market_value_equity=market_value_equity,
         debt=debt,
         cost_of_equity=cost_of_equity,
         cost_of_debt=wacc_assumptions["cost_of_debt"],
-        tax_rate=wacc_assumptions["tax_rate"],
+        tax_rate=tax_rate,
     )

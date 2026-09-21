@@ -8,7 +8,11 @@ from src.data_sources import (
     get_market_data,
     normalise_historical_data,
 )
-from src.assumptions import load_assumptions
+from src.assumptions import (
+    load_assumptions,
+    build_historical_assumptions,
+    build_forecast_assumptions
+)
 from src.forecasts import build_forecast
 from src.valuation import build_valuation
 from src.comps import build_comps_valuation
@@ -21,7 +25,11 @@ def main():
 
     historical_data = normalise_historical_data(data)
     market_data = get_market_data(data)
-    assumptions = load_assumptions()
+
+    assumptions = build_forecast_assumptions(
+        historical_data=historical_data,
+        assumptions=load_assumptions(),
+        )
 
     forecast = build_forecast(
         historical_data=historical_data,
@@ -45,6 +53,15 @@ def main():
         target_historical_data=historical_data,
         comparable_tickers=comparable_tickers,
     )
+
+    print("\nForecast:")
+    print(forecast)
+
+    print("\nLatest financial data:")
+    print(historical_data.iloc[-1])
+
+    print("\nMarket data:")
+    print(market_data)
 
     print(f"\nTicker: {ticker.upper()}")
     print("\nValuation:")

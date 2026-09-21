@@ -1,27 +1,7 @@
-forecast:
-  revenue_growth:
-    2026: 0.045
-    2027: 0.040
-    2028: 0.035
-    2029: 0.030
-    2030: 0.025
-
-  ebit_margin:
-    2026: 0.23
-    2027: 0.23
-    2028: 0.235
-    2029: 0.235
-    2030: 0.24
-
-  tax_rate: 0.19
-
 terminal:
   growth_rate: 0.025
   exit_multiple: 18.0
 
 wacc:
-  risk_free_rate: 0.04
-  beta: 1.0
   market_risk_premium: 0.05
   cost_of_debt: 0.05
-  tax_rate: 0.19

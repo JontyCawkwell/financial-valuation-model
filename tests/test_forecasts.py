@@ -1,11 +1,14 @@
 from pathlib import Path
 import sys
 
+import pandas as pd
 import pytest
 
 sys.path.append(str(Path(__file__).resolve().parent.parent))
-from src.data import load_historical_data
-from src.assumptions import load_assumptions
+from src.assumptions import (
+    load_assumptions,
+    build_forecast_assumptions,
+)
 from src.forecasts import (
     calculate_change_in_nwc,
     calculate_nopat,
@@ -52,8 +55,25 @@ def test_calculate_change_in_nwc():
 
 
 def test_build_forecast():
-    historical_data = load_historical_data()
-    assumptions = load_assumptions()
+    historical_data = pd.DataFrame(
+        {
+            "year": [2021, 2022, 2023, 2024, 2025],
+            "revenue": [100, 105, 110, 115, 120],
+            "operating_income": [20, 21, 22, 23, 24],
+            "pretax_income": [18, 19, 20, 21, 22],
+            "income_tax_expense": [3.6, 3.8, 4.0, 4.2, 4.4],
+            "accounts_receivable": [10, 10, 10, 10, 10],
+            "inventories": [5, 5, 5, 5, 5],
+            "accounts_payable": [8, 8, 8, 8, 8],
+            "depreciation_amortisation": [4, 4.2, 4.4, 4.6, 4.8],
+            "capex": [5, 5.2, 5.4, 5.6, 5.8],
+        }
+    )
+
+    assumptions = build_forecast_assumptions(
+        historical_data,
+        load_assumptions(),
+    )
 
     forecast = build_forecast(
         historical_data,
